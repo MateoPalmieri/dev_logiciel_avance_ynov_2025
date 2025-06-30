@@ -1,6 +1,7 @@
 # 🧠 Quiz Room avec Buzzers
 
 Ce projet simule une salle de quiz avec des buzzers virtuels. Il utilise :
+
 - Un **client CLI en C++** pour simuler les joueurs
 - Un **serveur Node.js** qui écoute les buzzers via MQTT
 - Une **IHM Web (HTML/JS)** pour afficher le gagnant et le nombre de joueurs
@@ -31,20 +32,23 @@ rendu_final/
 Il faut avoir installé :
 
 ### 🟢 Node.js
+
 - Télécharger depuis [https://nodejs.org](https://nodejs.org)
 - Vérifier : `node -v`, `npm -v`
 
 ### 🟦 Compilateur C++ (MinGW recommandé)
+
 - Installe via [MSYS2](https://www.msys2.org) ou [MinGW](https://sourceforge.net/projects/mingw/)
 - Vérifier : `g++ --version`
 
 ### 🔁 Mosquitto (broker MQTT)
+
 - Télécharger ici : [https://mosquitto.org/download/](https://mosquitto.org/download/)
 - Inclure les **tools** (`mosquitto_pub`, `mosquitto_sub`)
 - Ajouter `C:\Program Files\mosquitto` à la variable `PATH`
 - Vérifier :
-  - `mosquitto`
-  - `mosquitto_pub --help`
+    - `mosquitto`
+    - `mosquitto_pub --help`
 
 ---
 
@@ -53,6 +57,7 @@ Il faut avoir installé :
 ### 1. Lancer le broker MQTT
 
 Dans un terminal :
+
 ```bash
 mosquitto
 ```
@@ -65,9 +70,41 @@ npm install     # à faire une seule fois
 npm start
 ```
 
-
 ```bash
 cd rendu_final/cli
 g++ -std=c++11 -o main.exe main.cpp -lpthread    # À faire si il n'y a pas de fichier main.exe
 ./main.exe
 ```
+
+## 🐳 Lancement Complet avec Docker
+
+1. **Premier lancement** :
+
+    ```bash
+    chmod +x start.sh  # Rendre le script exécutable
+    ./start.sh
+    ```
+
+2. **Ce qui se passe :**
+
+    🟢 Broker MQTT démarre sur le port 1883
+
+    🚀 Serveur Node.js se lance (installation des dépendances puis `npm start`)
+
+    💻 Client C++ se compile et s'exécute en mode interactif
+3. **Accès aux services :**
+
+   Interface web: http://localhost:3000
+
+   Broker MQTT: mqtt://localhost:1883
+4. **Commandes utiles :**
+    ```bash
+    # Voir les logs du serveur
+    docker-compose logs server
+    
+    # Redémarrer un service
+    docker-compose restart server
+    
+    # Arrêter tout
+    docker-compose down
+    ```

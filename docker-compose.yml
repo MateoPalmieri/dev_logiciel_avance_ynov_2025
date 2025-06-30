@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mqtt:
+    image: eclipse-mosquitto:2.0
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+
+  server:
+    build: ./webserver
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./webserver:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    depends_on:
+      - mqtt
+
+  client:
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
+    volumes:
+      - ./cli:/app
+    stdin_open: true
+    tty: true
+    depends_on:
+      - mqtt
+      - server
+    command: bash -c "g++ -std=c++11 -o /app/main.exe /app/main.cpp -lpthread && /app/main.exe"
