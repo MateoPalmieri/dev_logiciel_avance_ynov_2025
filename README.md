@@ -71,3 +71,30 @@ cd rendu_final/cli
 g++ -std=c++11 -o main.exe main.cpp -lpthread    # À faire si il n'y a pas de fichier main.exe
 ./main.exe
 ```
+
+## 🐳 Lancement avec Docker
+
+Cette option permet de lancer l'ensemble du projet (broker MQTT, serveur Node.js et client C++) sans avoir à installer les dépendances manuellement.
+
+### Prérequis
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et en cours d'exécution
+- WSL2 activé (sur Windows)
+
+
+### Commandes
+
+1. **Premier lancement** (construction des images) :
+```bash
+docker-compose up --build
+```
+
+2. **Lancement normal** (après la première construction) :
+```bash
+docker-compose up
+```
+
+3. **Arrêt des services** :
+
+```bash
+docker-compose down
+```
