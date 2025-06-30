@@ -9,33 +9,19 @@ services:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
       - ./mosquitto/log:/mosquitto/log
-    networks:
-      - quiz-network
 
   server:
     build: ./webserver
     ports:
       - "3000:3000"
-    depends_on:
-      - mqtt
     volumes:
       - ./webserver:/app
-    networks:
-      - quiz-network
-    environment:
-      - MQTT_HOST=mqtt
 
   client:
     build: ./cli
-    depends_on:
-      - mqtt
-    networks:
-      - quiz-network
     stdin_open: true
     tty: true
-    environment:
-      - MQTT_HOST=mqtt
-
-networks:
-  quiz-network:
-    driver: bridge
+    volumes:
+      - ./cli:/app
+    working_dir: /app
+    command: bash -c "g++ -std=c++11 -o main.exe main.cpp -lpthread && ./main.exe"

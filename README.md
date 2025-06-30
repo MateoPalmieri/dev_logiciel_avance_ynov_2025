@@ -1,6 +1,7 @@
 # 🧠 Quiz Room avec Buzzers
 
 Ce projet simule une salle de quiz avec des buzzers virtuels. Il utilise :
+
 - Un **client CLI en C++** pour simuler les joueurs
 - Un **serveur Node.js** qui écoute les buzzers via MQTT
 - Une **IHM Web (HTML/JS)** pour afficher le gagnant et le nombre de joueurs
@@ -31,20 +32,23 @@ rendu_final/
 Il faut avoir installé :
 
 ### 🟢 Node.js
+
 - Télécharger depuis [https://nodejs.org](https://nodejs.org)
 - Vérifier : `node -v`, `npm -v`
 
 ### 🟦 Compilateur C++ (MinGW recommandé)
+
 - Installe via [MSYS2](https://www.msys2.org) ou [MinGW](https://sourceforge.net/projects/mingw/)
 - Vérifier : `g++ --version`
 
 ### 🔁 Mosquitto (broker MQTT)
+
 - Télécharger ici : [https://mosquitto.org/download/](https://mosquitto.org/download/)
 - Inclure les **tools** (`mosquitto_pub`, `mosquitto_sub`)
 - Ajouter `C:\Program Files\mosquitto` à la variable `PATH`
 - Vérifier :
-  - `mosquitto`
-  - `mosquitto_pub --help`
+    - `mosquitto`
+    - `mosquitto_pub --help`
 
 ---
 
@@ -53,6 +57,7 @@ Il faut avoir installé :
 ### 1. Lancer le broker MQTT
 
 Dans un terminal :
+
 ```bash
 mosquitto
 ```
@@ -65,36 +70,50 @@ npm install     # à faire une seule fois
 npm start
 ```
 
-
 ```bash
 cd rendu_final/cli
 g++ -std=c++11 -o main.exe main.cpp -lpthread    # À faire si il n'y a pas de fichier main.exe
 ./main.exe
 ```
 
-## 🐳 Lancement avec Docker
+## 🐳 Compilation automatique du C++ avec Docker
 
-Cette option permet de lancer l'ensemble du projet (broker MQTT, serveur Node.js et client C++) sans avoir à installer les dépendances manuellement.
+Le système Docker compile automatiquement le programme C++ lors de la construction de l'image :
 
-### Prérequis
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et en cours d'exécution
-- WSL2 activé (sur Windows)
+1. Lors du premier lancement (`docker-compose up --build`), le Dockerfile :
+    - Installe g++ et les outils MQTT
+    - Compile `main.cpp` en `main.exe`
+    - Stocke l'exécutable dans le volume partagé
+
+2. Lors des lancements suivants :
+    - Le fichier `main.exe` compilé est réutilisé
+    - Pour forcer une recompilation, utilisez :
+      ```bash
+      docker-compose up --build client
+      ```
+
+3. Pour nettoyer et recompiler :
+   ```bash
+   docker-compose build --no-cache client
+      ```
 
 
-### Commandes
+### Fonctionnement :
 
-1. **Premier lancement** (construction des images) :
-```bash
-docker-compose up --build
-```
+1. Lorsque vous lancez `docker-compose up --build` :
+   - Docker crée une image avec le compilateur C++
+   - Compile `main.cpp` en `main.exe`
+   - Monte le fichier exécutable dans votre dossier local via le volume
 
-2. **Lancement normal** (après la première construction) :
-```bash
-docker-compose up
-```
+2. Le fichier `main.exe` généré sera :
+   - Disponible dans le conteneur (`/app/main.exe`)
+   - Copié dans votre dossier `cli/` local grâce au volume monté
 
-3. **Arrêt des services** :
+3. Pour développer :
+   - Modifiez `main.cpp` localement
+   - Pour recompiler :
+     ```bash
+     docker-compose up --build client
+     ```
 
-```bash
-docker-compose down
-```
+Cette solution offre le meilleur des deux mondes : compilation automatique dans un environnement contrôlé tout en gardant l'exécutable disponible localement.

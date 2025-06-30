@@ -6,8 +6,11 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+# Copier uniquement le fichier source
 COPY main.cpp .
 
-RUN g++ -std=c++11 -o main main.cpp -lpthread
+# Compiler et produire main.exe
+RUN g++ -std=c++11 -o main.exe main.cpp -lpthread
 
-CMD ["./main"]
+# Commande par défaut - lance le programme compilé
+CMD ["./main.exe"]
