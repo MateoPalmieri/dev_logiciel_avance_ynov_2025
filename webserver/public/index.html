@@ -109,8 +109,6 @@
 
             const playersDiv = document.getElementById("players");
             playersDiv.innerHTML = "";
-
-            console.log(data.count);
             
             if (!data.count || data.count === 0) {
                 playersDiv.innerHTML = "<p>⏳ En attente de joueurs...</p>";

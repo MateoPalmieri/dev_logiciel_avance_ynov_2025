@@ -56,3 +56,5 @@ app.post('/reset', (req, res) => {
 app.listen(3000, () => {
   console.log('Serveur lancé sur http://localhost:3000');
 });
+
+module.exports = app; // Export the app for testing
