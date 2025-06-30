@@ -5,12 +5,3 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Copier uniquement le fichier source
-COPY main.cpp .
-
-# Compiler et produire main.exe
-RUN g++ -std=c++11 -o main.exe main.cpp -lpthread
-
-# Commande par défaut - lance le programme compilé
-CMD ["./main.exe"]

@@ -16,12 +16,18 @@ services:
       - "3000:3000"
     volumes:
       - ./webserver:/app
+    depends_on:
+      - mqtt
 
   client:
-    build: ./cli
-    stdin_open: true
-    tty: true
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
     volumes:
       - ./cli:/app
-    working_dir: /app
-    command: bash -c "g++ -std=c++11 -o main.exe main.cpp -lpthread && ./main.exe"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - mqtt
+      - server
+    command: bash -c "g++ -std=c++11 -o /app/main.exe /app/main.cpp -lpthread && /app/main.exe"

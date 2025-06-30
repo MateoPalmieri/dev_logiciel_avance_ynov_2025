@@ -117,3 +117,10 @@ Le système Docker compile automatiquement le programme C++ lors de la construct
      ```
 
 Cette solution offre le meilleur des deux mondes : compilation automatique dans un environnement contrôlé tout en gardant l'exécutable disponible localement.
+
+## 🐳 Lancement Automatique
+
+1. **Première utilisation** :
+```bash
+chmod +x start.sh  # Rendre le script exécutable
+./start.sh
