@@ -1,4 +1,3 @@
-const { log } = require('console');
 const express = require('express');
 const mqtt = require('mqtt');
 const path = require('path');
