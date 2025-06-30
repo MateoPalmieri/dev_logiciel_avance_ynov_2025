@@ -85,7 +85,7 @@
 <body>
   <div class="container">
     <h1>Quiz Room</h1>
-    <div class="question" id="question">❓ Quelle est la capitale de la France ?</div>
+    <div class="question" id="question">⏳ En attente de la question...</div>
 
     <div class="content">
       
@@ -124,6 +124,19 @@
             }
         }
 
+        async function getQuestion() {
+            const res = await fetch('/question');
+            const data = await res.json();
+
+            const questionDiv = document.getElementById("question");
+
+            if (data.question) {
+                questionDiv.textContent = "❓ " + data.question;
+            } else {
+                questionDiv.textContent = "⏳ En attente de la question...";
+            }
+        }
+
         async function getWinner() {
             const res = await fetch('/winner');
             const data = await res.json();
@@ -149,10 +162,12 @@
 
         setInterval(() => {
             getPlayers();
+            getQuestion();
             getWinner();
         }, 1000);
 
         getPlayers();
+        getQuestion();
         getWinner();
     </script>
 
