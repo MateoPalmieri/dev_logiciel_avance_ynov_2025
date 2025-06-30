@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Room</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f4f8;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 600px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .question {
+      background: #f9fafb;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .content {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .players {
+      flex: 1;
+      background: #eef2f7;
+      padding: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      flex: 1;
+    }
+
+    button {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #resetBtn {
+      background-color: #fcd34d;
+    }
+
+    #gagneBtn {
+      background-color: #34d399;
+      color: white;
+    }
+
+    #perduBtn {
+      background-color: #ef4444;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Quiz Room</h1>
+    <div class="question" id="question">❓ Quelle est la capitale de la France ?</div>
+
+    <div class="content">
+      
+        <div class="players" id="players">
+            <p id="loading">⏳ En attente de joueurs...</p>
+        </div>
+
+      <div class="actions">
+        <button id="resetBtn" onclick="resetGame()">🔄 Reset</button>
+        <button id="gagneBtn" disabled>🎉 Gagné !</button>
+        <button id="perduBtn" disabled>❌ Perdu</button>
+      </div>
+
+    </div>
+  </div>
+
+    <script>
+        async function getPlayers() {
+            const res = await fetch('/players');
+            const data = await res.json();
+
+            const playersDiv = document.getElementById("players");
+            playersDiv.innerHTML = "";
+
+            console.log(data.count);
+            
+            if (!data.count || data.count === 0) {
+                playersDiv.innerHTML = "<p>⏳ En attente de joueurs...</p>";
+                return;
+            }
+
+            for (let i = 1; i <= data.count; i++) {
+                const p = document.createElement("p");
+                p.textContent = `👤 Joueur ${i}`;
+                playersDiv.appendChild(p);
+            }
+        }
+
+        async function getWinner() {
+            const res = await fetch('/winner');
+            const data = await res.json();
+
+            const gagneBtn = document.getElementById("gagneBtn");
+            const perduBtn = document.getElementById("perduBtn");
+
+            if (data.winner) {
+                gagneBtn.disabled = false;
+                perduBtn.disabled = false;
+                gagneBtn.textContent = `🎉 Joueur ${data.winner} a gagné`;
+            } else {
+                gagneBtn.disabled = true;
+                perduBtn.disabled = true;
+                gagneBtn.textContent = "🎉 Gagné !";
+            }
+        }
+
+        async function resetGame() {
+            await fetch('/reset', { method: "POST" });
+            getWinner();
+        }
+
+        setInterval(() => {
+            getPlayers();
+            getWinner();
+        }, 1000);
+
+        getPlayers();
+        getWinner();
+    </script>
+
+  <!-- <script>
+    async function getWinner() {
+      const res = await fetch('/winner');
+      const data = await res.json();
+
+      const gagneBtn = document.getElementById("gagneBtn");
+      const perduBtn = document.getElementById("perduBtn");
+
+      if (data.winner) {
+        gagneBtn.disabled = false;
+        perduBtn.disabled = false;
+        gagneBtn.textContent = `🎉 Joueur ${data.winner} a gagné`;
+      } else {
+        gagneBtn.disabled = true;
+        perduBtn.disabled = true;
+        gagneBtn.textContent = "🎉 Gagné !";
+      }
+    }
+
+    async function resetGame() {
+      await fetch('/reset', { method: "POST" });
+      getWinner();
+    }
+
+    setInterval(getWinner, 1000);
+    getWinner();
+  </script> -->
+</body>
+</html>
