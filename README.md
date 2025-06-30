@@ -76,51 +76,35 @@ g++ -std=c++11 -o main.exe main.cpp -lpthread    # À faire si il n'y a pas de f
 ./main.exe
 ```
 
-## 🐳 Compilation automatique du C++ avec Docker
+## 🐳 Lancement Complet avec Docker
 
-Le système Docker compile automatiquement le programme C++ lors de la construction de l'image :
+1. **Premier lancement** :
 
-1. Lors du premier lancement (`docker-compose up --build`), le Dockerfile :
-    - Installe g++ et les outils MQTT
-    - Compile `main.cpp` en `main.exe`
-    - Stocke l'exécutable dans le volume partagé
+    ```bash
+    chmod +x start.sh  # Rendre le script exécutable
+    ./start.sh
+    ```
 
-2. Lors des lancements suivants :
-    - Le fichier `main.exe` compilé est réutilisé
-    - Pour forcer une recompilation, utilisez :
-      ```bash
-      docker-compose up --build client
-      ```
+2. **Ce qui se passe :**
 
-3. Pour nettoyer et recompiler :
-   ```bash
-   docker-compose build --no-cache client
-      ```
+    🟢 Broker MQTT démarre sur le port 1883
 
+    🚀 Serveur Node.js se lance (installation des dépendances puis `npm start`)
 
-### Fonctionnement :
+    💻 Client C++ se compile et s'exécute en mode interactif
+3. **Accès aux services :**
 
-1. Lorsque vous lancez `docker-compose up --build` :
-   - Docker crée une image avec le compilateur C++
-   - Compile `main.cpp` en `main.exe`
-   - Monte le fichier exécutable dans votre dossier local via le volume
+   Interface web: http://localhost:3000
 
-2. Le fichier `main.exe` généré sera :
-   - Disponible dans le conteneur (`/app/main.exe`)
-   - Copié dans votre dossier `cli/` local grâce au volume monté
-
-3. Pour développer :
-   - Modifiez `main.cpp` localement
-   - Pour recompiler :
-     ```bash
-     docker-compose up --build client
-     ```
-
-Cette solution offre le meilleur des deux mondes : compilation automatique dans un environnement contrôlé tout en gardant l'exécutable disponible localement.
-
-## 🐳 Lancement Automatique
-
-1. **Première utilisation** :
-```bash
-chmod +x start.sh  # Rendre le script exécutable
-./start.sh
+   Broker MQTT: mqtt://localhost:1883
+4. **Commandes utiles :**
+    ```bash
+    # Voir les logs du serveur
+    docker-compose logs server
+    
+    # Redémarrer un service
+    docker-compose restart server
+    
+    # Arrêter tout
+    docker-compose down
+    ```
