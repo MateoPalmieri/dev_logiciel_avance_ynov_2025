@@ -23,7 +23,7 @@ void waitForBuzz() {
         if (std::cin.fail() || id < 1 || id > playerCount) {
             std::cin.clear(); // reset l'état d'erreur
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // vider le buffer
-            std::cout << "Entrée invalide. Réessaye.\n";
+            std::cout << "Entrée invalide. Réessayez.\n";
             continue;
         }
 
@@ -81,7 +81,7 @@ int main() {
         std::cout << "\nCombien de joueurs ? ";
         std::cin >> playerCount;
 
-        if (std::cin.fail() || playerCount <= 0) {
+        if (std::cin.fail() || playerCount <= 1) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Entrée invalide.\n";
